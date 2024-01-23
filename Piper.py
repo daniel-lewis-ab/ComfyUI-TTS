@@ -55,7 +55,7 @@ class Load_Piper_Model:
     FUNCTION = "execute"
     CATEGORY = "TTS"
 
-    def execute(self, Model:str, n_ctx:int):
+    def execute(self, Model:str):
 
         # basically just calls __init__ on the Llama class
         model_path = folder_paths.get_full_path("tts", Model)
@@ -71,13 +71,41 @@ class Load_Piper_Model:
         return (tts,)
 
 
+class Piper_Speak_Text:
+    """
+    Use a piper-tts PiperVoice object to speak text
+    """
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "TTS":("TTS", ), 
+                "text":("STRING", {"default":"", "forceInput":True,}),
+            },
+        }
+
+    # ComfyUI will effectively return the Llama class instanciation provided by execute() and call it an LLM
+    RETURN_TYPES = ()
+    FUNCTION = "execute"
+    CATEGORY = "TTS"
+    OUTPUT_NODE = True
+
+    def execute(self, TTS, text:str):
+
+        tts = TTS.synthesize_stream_raw(text)
+
+        return ()
+
 
 NODE_CLASS_MAPPINGS = {
     "Load_Piper_Model": Load_Piper_Model,
+    "Piper_Speak_Text": Piper_Speak_Text,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "Load_Piper_Model": "Load Piper Model",
+    "Piper_Speak_Text": "Piper Speak Text",
 }
 
 
