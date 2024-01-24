@@ -2,6 +2,8 @@
 import sys
 import os
 import folder_paths
+import wave
+from subprocess import Popen, PIPE, STDOUT
 from typing import List
 from .logger import logger
 
@@ -14,7 +16,7 @@ sys.path.append(venv_site_packages)
 
 # Attempt to get piper-tts if it doesn't exist
 try:
-    from piper import voice
+    from piper.voice import PiperVoice
 except ImportError:
 
     logger.warn("Unable to find piper-tts, attempting to fix.")
@@ -26,7 +28,7 @@ except ImportError:
 
     sys.path.append(site_packages)
     try:
-        from piper import voice
+        from piper.voice import PiperVoice
         logger.info("Successfully acquired piper-tts.")
     except ImportError:
         logger.exception("Nope.  Actually unable to find piper-tts.")
@@ -93,9 +95,15 @@ class Piper_Speak_Text:
 
     def execute(self, TTS, text:str):
 
-        tts = TTS.synthesize_stream_raw(text)
+        stream = TTS.synthesize_stream_raw(text)
 
+        command = ["aplay","-r","22050","-f","S16_LE","-t","raw"]
+        ps = Popen(command, stdout=PIPE, stdin=PIPE, stderr=PIPE)
+        for i in stream:
+            ps.stdin.write(i)
+        ps.wait()
         return ()
+
 
 
 NODE_CLASS_MAPPINGS = {
