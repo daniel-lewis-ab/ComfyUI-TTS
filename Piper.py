@@ -2,8 +2,8 @@
 import sys
 import os
 import folder_paths
-import wave
-from subprocess import Popen, PIPE, STDOUT
+import numpy
+import sounddevice
 from typing import List
 from .logger import logger
 
@@ -97,11 +97,11 @@ class Piper_Speak_Text:
 
         stream = TTS.synthesize_stream_raw(text)
 
-        command = ["aplay","-r","22050","-f","S16_LE","-t","raw"]
-        ps = Popen(command, stdout=PIPE, stdin=PIPE, stderr=PIPE)
-        for i in stream:
-            ps.stdin.write(i)
-        ps.wait()
+        for audio_data in stream:
+            sounddevice.play(
+                numpy.frombuffer(audio_data,dtype=numpy.int16), 
+                blocking=True, 
+                samplerate=TTS.config.sample_rate)
         return ()
 
 
