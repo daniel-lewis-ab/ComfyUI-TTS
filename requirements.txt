@@ -1,2 +1,3 @@
-piper-tts
+sounddevice
 pyaudio
+piper-tts
