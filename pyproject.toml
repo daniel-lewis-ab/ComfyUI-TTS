@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-tts"
+description = "Text To Speech (TTS) for ComfyUI"
+version = "1.0.0"
+license = "LICENSE"
+dependencies = ["sounddevice", "pyaudio", "piper-tts"]
+
+[project.urls]
+Repository = "https://github.com/daniel-lewis-ab/ComfyUI-TTS"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "ComfyUI-TTS"
+Icon = ""
